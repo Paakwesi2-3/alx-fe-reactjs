@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import useRecipeStore from './recipeStore';
 
 const RecipeList = () => {
@@ -5,14 +6,14 @@ const RecipeList = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Recipe List</h2>
+      <h2>All Recipes</h2>
       {recipes.length === 0 ? (
-        <p>No recipes added yet.</p>
+        <p>No recipes yet. Add one!</p>
       ) : (
         recipes.map((recipe) => (
-          <div key={recipe.id} style={{ marginBottom: '15px' }}>
+          <div key={recipe.id} style={{ marginBottom: '10px' }}>
             <h3>{recipe.title}</h3>
-            <p>{recipe.description}</p>
+            <Link to={`/recipe/${recipe.id}`}>View Details</Link>
           </div>
         ))
       )}

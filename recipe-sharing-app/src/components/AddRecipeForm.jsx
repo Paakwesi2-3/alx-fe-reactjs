@@ -8,7 +8,6 @@ const AddRecipeForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title || !description) return;
     addRecipe({ id: Date.now(), title, description });
     setTitle('');
     setDescription('');
@@ -22,15 +21,15 @@ const AddRecipeForm = () => {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Title"
-        style={{ display: 'block', margin: '10px 0', padding: '8px' }}
+        style={{ display: 'block', margin: '10px 0' }}
       />
       <textarea
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Description"
-        style={{ display: 'block', margin: '10px 0', padding: '8px' }}
+        style={{ display: 'block', margin: '10px 0' }}
       />
-      <button type="submit" style={{ padding: '8px 12px' }}>Add Recipe</button>
+      <button type="submit">Add Recipe</button>
     </form>
   );
 };
