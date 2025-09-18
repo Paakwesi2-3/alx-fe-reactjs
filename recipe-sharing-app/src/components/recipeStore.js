@@ -2,14 +2,16 @@ import { create } from 'zustand';
 
 const useRecipeStore = create((set) => ({
   recipes: [],
+  searchTerm: '',   // ✅ required for search
 
-  // ✅ Add a new recipe
+  // Recipe actions
+  setRecipes: (recipes) => set({ recipes }),
+
   addRecipe: (recipe) =>
     set((state) => ({
       recipes: [...state.recipes, { id: Date.now(), ...recipe }],
     })),
 
-  // ✅ Update a recipe by ID
   updateRecipe: (id, updatedRecipe) =>
     set((state) => ({
       recipes: state.recipes.map((recipe) =>
@@ -17,12 +19,13 @@ const useRecipeStore = create((set) => ({
       ),
     })),
 
-  // ✅ Delete a recipe by ID
   deleteRecipe: (id) =>
     set((state) => ({
       recipes: state.recipes.filter((recipe) => recipe.id !== id),
     })),
+
+  // ✅ Search actions
+  setSearchTerm: (term) => set({ searchTerm: term }),
 }));
 
-export default useRecipeStore;import create from 'zustand';
-
+export default useRecipeStore;
