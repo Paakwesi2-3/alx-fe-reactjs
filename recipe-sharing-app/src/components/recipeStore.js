@@ -1,22 +1,25 @@
 import create from 'zustand';
 
 const useRecipeStore = create(set => ({
+  // Required base
   recipes: [],
-  favorites: [],
-  recommendations: [],
+  addRecipe: (newRecipe) =>
+    set(state => ({ recipes: [...state.recipes, newRecipe] })),
+  setRecipes: (recipes) => set({ recipes }),
 
-  // 🔹 Favorites
+  // Favorites
+  favorites: [],
   addFavorite: (recipeId) =>
     set(state => ({
-      favorites: [...new Set([...state.favorites, recipeId])] // avoid duplicates
+      favorites: [...new Set([...state.favorites, recipeId])]
     })),
-
   removeFavorite: (recipeId) =>
     set(state => ({
       favorites: state.favorites.filter(id => id !== recipeId)
     })),
 
-  // 🔹 Recommendations (mock logic, can improve later)
+  // Recommendations
+  recommendations: [],
   generateRecommendations: () =>
     set(state => {
       const recommended = state.recipes.filter(recipe =>
@@ -24,6 +27,17 @@ const useRecipeStore = create(set => ({
       );
       return { recommendations: recommended };
     }),
+
+  // Search + Filtering
+  searchTerm: '',
+  setSearchTerm: (term) => set({ searchTerm: term }),
+  filteredRecipes: [],
+  filterRecipes: () =>
+    set(state => ({
+      filteredRecipes: state.recipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
+      )
+    })),
 }));
 
 export default useRecipeStore;
