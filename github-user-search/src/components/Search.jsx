@@ -1,55 +1,38 @@
 import { useState } from "react";
+import { fetchUserData } from "../services/githubService";
+import UserCard from "./UserCard";
 
-function Search({ onSearch }) {
+export default function Search() {
   const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState([]);
-  const [error, setError] = useState("");
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    if (!query) return;
-
-    setLoading(true);
-    setError("");
     try {
-      const users = await onSearch(query);
-      if (users.length === 0) {
-        setError("Looks like we can't find the user");
-      }
-      setResults(users);
+      const data = await fetchUserData(query);
+      setUser(data);
+      setError(null);
     } catch (err) {
+      setUser(null);
       setError("Looks like we can't find the user");
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder="Search GitHub users..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search GitHub user..."
         />
         <button type="submit">Search</button>
       </form>
 
-      {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
-
-      <div className="results">
-        {results.map((user) => (
-          <div key={user.id} className="user-card">
-            <img src={user.avatar_url} alt={user.login} width={50} />
-            <p>{user.login}</p>
-          </div>
-        ))}
-      </div>
+      {user && <UserCard user={user} />}
     </div>
   );
 }
-
-export default Search;
