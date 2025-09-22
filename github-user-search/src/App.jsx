@@ -1,33 +1,25 @@
-import React, { useState } from "react";
-import SearchBar from "./components/SearchBar";
+import { useState } from "react";
+import Search from "./components/Search"; // ✅ renamed
 import UserCard from "./components/UserCard";
-import { searchUsers } from "./services/githubService";
+import { fetchUserData } from "./services/githubService"; // ✅ corrected
 
 function App() {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  async function handleSearch(query) {
-    if (!query) return setUsers([]);
-    setLoading(true);
+  const handleSearch = async (query) => {
     try {
-      const results = await searchUsers(query);
+      const results = await fetchUserData(query); // ✅ use fetchUserData
       setUsers(results);
-    } catch (err) {
-      console.error("Search error:", err);
-      setUsers([]);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching users:", error);
     }
-  }
+  };
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: 20 }}>
+    <div className="app">
       <h1>GitHub User Search</h1>
-      <SearchBar onSearch={handleSearch} />
-      {loading && <p>Loading…</p>}
-      <div>
-        {users.length === 0 && !loading && <p>No results yet.</p>}
+      <Search onSearch={handleSearch} />
+      <div className="results">
         {users.map((user) => (
           <UserCard key={user.id} user={user} />
         ))}
