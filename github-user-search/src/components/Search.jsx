@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { fetchUserData } from "../services/githubService";
-import UserCard from "./UserCard";
 
 export default function Search() {
   const [query, setQuery] = useState("");
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setUser(null);
+
     try {
       const data = await fetchUserData(query);
       setUser(data);
-      setError(null);
     } catch (err) {
-      setUser(null);
-      setError("Looks like we can't find the user");
+      setError("Looks like we cant find the user");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,8 +35,16 @@ export default function Search() {
         <button type="submit">Search</button>
       </form>
 
+      {loading && <p>Loading...</p>}
+
       {error && <p>{error}</p>}
-      {user && <UserCard user={user} />}
+
+      {user && (
+        <div>
+          <img src={user.avatar_url} alt={user.login} />
+          <h2>{user.login}</h2>
+        </div>
+      )}
     </div>
   );
 }
