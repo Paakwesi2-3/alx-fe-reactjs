@@ -1,18 +1,18 @@
-export async function searchUsers(username, location, minRepos) {
-  let query = "";
+import axios from "axios";
 
-  if (username) query += `${username} in:login `;
-  if (location) query += `location:${location} `;
-  if (minRepos) query += `repos:>=${minRepos}`;
+const BASE_URL = "https://api.github.com";
 
-  const response = await fetch(
-    `https://api.github.com/search/users?q=${encodeURIComponent(query)}`
-  );
+export const fetchUserData = async (username, location, minRepos) => {
+  try {
+    // Build the query string
+    let query = username ? `${username} in:login` : "";
+    if (location) query += ` location:${location}`;
+    if (minRepos) query += ` repos:>=${minRepos}`;
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch users");
+    const response = await axios.get(`${BASE_URL}/search/users?q=${query}`);
+    return response.data.items;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return [];
   }
-
-  return await response.json();
-}
-
+};
