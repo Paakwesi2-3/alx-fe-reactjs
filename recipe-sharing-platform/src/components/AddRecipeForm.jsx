@@ -6,17 +6,25 @@ const AddRecipeForm = () => {
   const [steps, setSteps] = useState("");
   const [errors, setErrors] = useState({});
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  // ✅ Separate validation function
+  const validate = () => {
     let formErrors = {};
     if (!title.trim()) formErrors.title = "Recipe title is required";
     if (!ingredients.trim()) {
       formErrors.ingredients = "Ingredients are required";
     } else if (ingredients.split(",").length < 2) {
-      formErrors.ingredients = "Please provide at least 2 ingredients (comma separated)";
+      formErrors.ingredients =
+        "Please provide at least 2 ingredients (comma separated)";
     }
     if (!steps.trim()) formErrors.steps = "Preparation steps are required";
+
+    return formErrors;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formErrors = validate(); // ✅ use validate()
 
     setErrors(formErrors);
 
@@ -35,9 +43,11 @@ const AddRecipeForm = () => {
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-6 text-center">Add a New Recipe</h2>
 
-      {/* form grid with md: breakpoint */}
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Title (full width) */}
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+      >
+        {/* Title */}
         <div className="md:col-span-2">
           <label className="block text-gray-700 font-medium">Recipe Title</label>
           <input
@@ -78,7 +88,7 @@ const AddRecipeForm = () => {
           {errors.steps && <p className="text-red-500 text-sm">{errors.steps}</p>}
         </div>
 
-        {/* Submit Button (full width) */}
+        {/* Submit Button */}
         <div className="md:col-span-2">
           <button
             type="submit"
